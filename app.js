@@ -12,26 +12,25 @@ const Field = ({name, placeholder, onChange, value}) => <div className="form-gro
 </div>;
 
 const Checkbox = ({name, children, onChange}) => <div className="form-group">
-    <input type="checkbox" name={name} id={name} onChange={onChange} className="mr-1" />
-    <label>{children}</label>
+    <label><input type="checkbox" name={name} id={name} onChange={onChange} className="mr-1" />{children}</label>
 </div>;
 
 const getProductsByCategory = category => products.filter(product => category === product.category);
 
-const RowProduct = ({name, price, stocked}) =><tr>
+const RowProduct = ({name, price, stocked}) => <tr>
     <td style={{color: stocked ? '' : 'red'}}>{name}</td>
     <td>{price}</td>
-    </tr>
+</tr>;
 
 
 class Form extends React.Component {
-    handleChangeInput = () => {
 
-    }
-    
-    handleChangeCheckbox = () => {
-        
-    }
+    constructor(props) {
+        super(props);
+        this.state = {
+            search: ""
+        };
+    }  
 
     render = () => <React.Fragment>
         <Field name="search" id="search" onChange={this.handleChangeInput} value="" placeholder="Search..." />
@@ -46,15 +45,39 @@ class GroupProducts extends React.Component {
         this.products = getProductsByCategory(this.props.category);
     }
 
+    isProductPrinted = (product) => (product.name.toLowerCase().includes(this.props.search.toLowerCase()) || this.props.search === "") && (!this.props.checked || product.stocked);
+
     render = () => <React.Fragment>
-            <tr><th>{this.props.category}</th></tr>
-            {this.products.map((product) => <RowProduct name={product.name} price={product.price} stocked={product.stocked} />)}
-        </React.Fragment>
+        {this.products.filter((product) => this.isProductPrinted(product)).length === 0 ? null : <tr><th>{this.props.category}</th></tr>}
+        {this.products.map((product, i) => this.isProductPrinted(product) ? <RowProduct name={product.name} price={product.price} stocked={product.stocked} key={i} /> : null)}
+    </React.Fragment>;
 }
 
 class Home extends React.Component {
-    render = () => <div className="container">
-        <Form />
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            search: "",
+            checked: false
+        };
+    }
+
+    handleChangeInput = (e) => {
+        this.setState({
+            search: e.target.value
+        });
+    }
+    
+    handleChangeCheckbox = (e) => {
+        this.setState({
+            checked: e.target.checked
+        });
+    }
+
+    render = () => <div className="container" style={{width: "300px"}}>
+        <Field name="search" id="search" onChange={this.handleChangeInput} value={this.state.search} placeholder="Search..." />
+        <Checkbox name="onlyStock" id="onlyStock" onChange={this.handleChangeCheckbox}>Only show products in stock</Checkbox>
         <table>
             <thead>
                 <tr>
@@ -63,8 +86,8 @@ class Home extends React.Component {
                 </tr>
             </thead>
             <tbody>
-                <GroupProducts category="Sporting Goods" />
-                <GroupProducts category="Electronics" />
+                <GroupProducts category="Sporting Goods" search={this.state.search} checked={this.state.checked} />
+                <GroupProducts category="Electronics" search={this.state.search} checked={this.state.checked} />
             </tbody>
         </table>
     </div>;
