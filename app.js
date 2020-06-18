@@ -22,12 +22,9 @@ const RowProduct = ({name, price, stocked}) => <tr>
     <td>{price}</td>
 </tr>;
 
+const getUniqueVal = (currentValue, index, array) => array.indexOf(currentValue) === index;
 
 class Form extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }  
 
     render = () => <React.Fragment>
         <Field name="search" id="search" onChange={this.handleChangeInput} value="" placeholder="Search..." />
@@ -54,6 +51,7 @@ class Home extends React.Component {
 
     constructor(props) {
         super(props);
+        this.categories = products.map(product => product.category).filter((category, index, array) =>  array.indexOf(category) === index);
         this.state = {
             search: "",
             checked: false
@@ -83,8 +81,7 @@ class Home extends React.Component {
                 </tr>
             </thead>
             <tbody>
-                <GroupProducts category="Sporting Goods" search={this.state.search} checked={this.state.checked} />
-                <GroupProducts category="Electronics" search={this.state.search} checked={this.state.checked} />
+                {this.categories.map((category, i) => <GroupProducts category={category} search={this.state.search} checked={this.state.checked} key={i} />)}
             </tbody>
         </table>
     </div>;
