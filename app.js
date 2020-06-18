@@ -22,8 +22,6 @@ const RowProduct = ({name, price, stocked}) => <tr>
     <td>{price}</td>
 </tr>;
 
-const getUniqueVal = (currentValue, index, array) => array.indexOf(currentValue) === index;
-
 class Form extends React.Component {
 
     render = () => <React.Fragment>
@@ -42,7 +40,7 @@ class GroupProducts extends React.Component {
     isProductPrinted = (product) => (product.name.toLowerCase().includes(this.props.search.toLowerCase()) || this.props.search === "") && (!this.props.checked || product.stocked);
 
     render = () => <React.Fragment>
-        {this.products.filter((product) => this.isProductPrinted(product)).length === 0 ? null : <tr><th>{this.props.category}</th></tr>}
+        {this.products.filter((product) => this.isProductPrinted(product)).length === 0 ? null : <tr><th colSpan="2">{this.props.category}</th></tr>}
         {this.products.map((product, i) => this.isProductPrinted(product) ? <RowProduct name={product.name} price={product.price} stocked={product.stocked} key={i} /> : null)}
     </React.Fragment>;
 }
