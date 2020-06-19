@@ -17,10 +17,11 @@ const Checkbox = ({name, children, onChange}) => <div className="form-group">
 
 const getProductsByCategory = category => products.filter(product => category === product.category);
 
-const RowProduct = ({name, price, stocked}) => <tr>
-    <td style={{color: stocked ? '' : 'red'}}>{name}</td>
-    <td>{price}</td>
-</tr>;
+const RowProduct = React.memo(({name, price, stocked}) =>
+    <tr>
+        <td style={{color: stocked ? '' : 'red'}}>{name}</td>
+        <td>{price}</td>
+    </tr>);
 
 class Form extends React.Component {
 
